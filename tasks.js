@@ -7,6 +7,7 @@ if (!localStorage.getItem('store_tasks')) {
 
 var cur_tasks = [];
 var stored = [];
+var lastid = 0;
 
 function clearList() {
     document.querySelector('#tasks').innerHTML = "";
@@ -16,6 +17,19 @@ function clearList() {
 
     localStorage.setItem('store_tasks', []);
 }
+
+/*function removeName(itemid){
+    var item = document.getElementById(itemid);
+
+    document.querySelector('#tasks').removeChild(item);
+
+    for (i = 0; i < stored.length; i++) {
+        if (stored[i] == item)
+
+    }
+
+    localStorage.setItem('store_tasks', JSON.stringify(stored.concat(cur_tasks)));
+}*/
 
 // Wait for page to load
 document.addEventListener('DOMContentLoaded', function() {
@@ -63,8 +77,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const task = newTask.value;
 
         // Create a list item for the new task and add the task to it
-        const li = document.createElement('li');
-        li.innerHTML = task;
+        var li = document.createElement('li');
+        li.appendChild(document.createTextNode(task));
+        li.setAttribute('id', 'item'+lastid);
+        var removeButton = document.createElement('button');
+        removeButton.appendChild(document.createTextNode("remove"));
+        removeButton.setAttribute('onClick', 'removeName("'+'item'+lastid+'")');
+        li.appendChild(removeButton);
 
         // Add new element to our unordered list:
         document.querySelector('#tasks').append(li);
