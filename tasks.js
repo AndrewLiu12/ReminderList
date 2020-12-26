@@ -40,7 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Upon opening, load the list up 
         for (i = 0; i < stored.length; i++) {
             const li = document.createElement('li');
-            li.innerHTML = stored[i];
+            //li.innerHTML = stored[i];
+            li.appendChild(document.createTextNode(stored[i]));
+            li.setAttribute('id', 'item'+lastid);
+            var removeButton = document.createElement('button');
+            removeButton.appendChild(document.createTextNode("remove"));
+            removeButton.setAttribute('onClick', 'removeName("'+'item'+lastid+'")');
+            li.appendChild(removeButton);
 
             // Add new element to our unordered list:
             document.querySelector('#tasks').append(li);
