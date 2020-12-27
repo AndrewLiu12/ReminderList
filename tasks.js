@@ -18,18 +18,28 @@ function clearList() {
     localStorage.setItem('store_tasks', []);
 }
 
-/*function removeName(itemid){
+function removeName(itemid){
     var item = document.getElementById(itemid);
 
     document.querySelector('#tasks').removeChild(item);
 
+    
     for (i = 0; i < stored.length; i++) {
-        if (stored[i] == item)
-
+        if (stored[i] === item.firstChild.nodeValue) {
+            stored.splice(i, 1);
+            break;
+        }
+    }
+    for (i = 0; i < cur_tasks.length; i++) {
+        if (cur_tasks[i] === item.firstChild.nodeValue) {
+            cur_tasks.splice(i, 1);
+            break;
+        }
     }
 
+
     localStorage.setItem('store_tasks', JSON.stringify(stored.concat(cur_tasks)));
-}*/
+}
 
 // Wait for page to load
 document.addEventListener('DOMContentLoaded', function() {
@@ -47,6 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
             removeButton.appendChild(document.createTextNode("remove"));
             removeButton.setAttribute('onClick', 'removeName("'+'item'+lastid+'")');
             li.appendChild(removeButton);
+
+            lastid += 1;
 
             // Add new element to our unordered list:
             document.querySelector('#tasks').append(li);
@@ -90,6 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
         removeButton.appendChild(document.createTextNode("remove"));
         removeButton.setAttribute('onClick', 'removeName("'+'item'+lastid+'")');
         li.appendChild(removeButton);
+
+        lastid += 1;
 
         // Add new element to our unordered list:
         document.querySelector('#tasks').append(li);
