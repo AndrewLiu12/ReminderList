@@ -12,6 +12,16 @@
         <ul id="lowest">Lowest Priority</ul>
         <form>
             <input id="task" placeholder = "New Task" type="text">
+            <!-- Same as new line -->
+            <br>
+            <!-- Radio buttons, as long as they have the same "name" value, it will be grouped -->
+            <input type="radio" id="high" name="priority" value="highest">
+            <label for="high">Highest</label><br>
+            <input type="radio" id="mid" name="priority" value="medium" checked="checked">
+            <label for="female">Medium</label><br>
+            <input type="radio" id="low" name="priority" value="lowest">
+            <label for="other">Lowest</label>
+            <br>
             <input id="submit" type="submit">
             <input id="clear" type="button" value="Clear List">
         </form>

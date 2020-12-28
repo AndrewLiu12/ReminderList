@@ -17,6 +17,8 @@ var lastid = 0;
 
 function clearList() {
     document.querySelector('#highest').innerHTML = "";
+    document.querySelector('#medium').innerHTML = "";
+    document.querySelector('#lowest').innerHTML = "";
 
     cur_tasks = [];
     stored = [];
@@ -27,8 +29,9 @@ function clearList() {
 function removeName(itemid){
     var item = document.getElementById(itemid);
 
-    document.querySelector('#highest').removeChild(item);
+    item.parentNode.removeChild(item);
 
+    //document.querySelector('#highest').removeChild(item);
     
     for (i = 0; i < stored.length; i++) {
         if (stored[i] === item.firstChild.nodeValue) {
@@ -97,6 +100,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Listen for submission of form
     document.querySelector('form').onsubmit = () => {
+        // Check which radio button was selected
+        //console.log(document.querySelector('input[name="priority"]:checked').value);
+        var radio_val = document.querySelector('input[name="priority"]:checked').value;
+
         // Find the task the user just submitted
         const task = newTask.value;
 
@@ -112,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         lastid += 1;
 
         // Add new element to our unordered list:
-        document.querySelector('#highest').append(li);
+        document.querySelector('#'+radio_val).append(li);
 
         // Add the new_task to the list
         cur_tasks.push(task);
