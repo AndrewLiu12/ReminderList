@@ -11,14 +11,15 @@ if (!localStorage.getItem('store_tasks')) {
     localStorage.setItem('store_tasks', []);
 }
 
+// Global Variables
 var cur_tasks = [];
 var stored = [];
 var lastid = 0;
 
 function clearList() {
-    document.querySelector('#highest').innerHTML = "";
-    document.querySelector('#medium').innerHTML = "";
-    document.querySelector('#lowest').innerHTML = "";
+    document.querySelector('#highest').innerHTML = "Highest Priority";
+    document.querySelector('#medium').innerHTML = "Medium Priority";
+    document.querySelector('#lowest').innerHTML = "Lowest Priority";
 
     cur_tasks = [];
     stored = [];
@@ -34,20 +35,23 @@ function removeName(itemid){
     //document.querySelector('#highest').removeChild(item);
     
     for (i = 0; i < stored.length; i++) {
-        if (stored[i] === item.firstChild.nodeValue) {
+        if (stored[i][1] === item.firstChild.nodeValue) {
             stored.splice(i, 1);
             break;
         }
     }
-    for (i = 0; i < cur_tasks.length; i++) {
-        if (cur_tasks[i] === item.firstChild.nodeValue) {
+    /*for (i = 0; i < cur_tasks.length; i++) {
+        if (cur_tasks[i][1] === item.firstChild.nodeValue) {
             cur_tasks.splice(i, 1);
             break;
         }
     }
 
+    for (x in cur_tasks) {
+        stored.push(x);
+    }*/
 
-    localStorage.setItem('store_tasks', JSON.stringify(stored.concat(cur_tasks)));
+    localStorage.setItem('store_tasks', JSON.stringify(stored));
 }
 
 // Wait for page to load
@@ -60,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (i = 0; i < stored.length; i++) {
             const li = document.createElement('li');
             //li.innerHTML = stored[i];
-            li.appendChild(document.createTextNode(stored[i]));
+            li.appendChild(document.createTextNode(stored[i][1]));
             li.setAttribute('id', 'item'+lastid);
             var removeButton = document.createElement('button');
             removeButton.appendChild(document.createTextNode("remove"));
@@ -70,7 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
             lastid += 1;
 
             // Add new element to our unordered list:
-            document.querySelector('#highest').append(li);
+            //document.querySelector('#highest').append(li);
+            document.querySelector('#'+stored[i][0]).append(li);
         }
     }
     else {
@@ -122,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#'+radio_val).append(li);
 
         // Add the new_task to the list
-        cur_tasks.push(task);
+        //cur_tasks.push([radio_val, task]);
 
         // Clear out input field:
         newTask.value = '';
@@ -130,8 +135,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Disable the submit button again:
         submit.disabled = true;
 
+        stored.push([radio_val, task])
+
         // Store tasks in local storage
-        localStorage.setItem('store_tasks', JSON.stringify(stored.concat(cur_tasks)));
+        localStorage.setItem('store_tasks', JSON.stringify(stored));
 
         // Stop form from submitting
         return false;
