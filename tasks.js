@@ -1,3 +1,9 @@
+// TO-DO List:
+// * Priority list
+// * Recently discarded
+// * Clocks
+// * Due Dates
+
 // Check if there is already a value in local storage
 if (!localStorage.getItem('store_tasks')) {
 
@@ -10,7 +16,7 @@ var stored = [];
 var lastid = 0;
 
 function clearList() {
-    document.querySelector('#tasks').innerHTML = "";
+    document.querySelector('#highest').innerHTML = "";
 
     cur_tasks = [];
     stored = [];
@@ -21,7 +27,7 @@ function clearList() {
 function removeName(itemid){
     var item = document.getElementById(itemid);
 
-    document.querySelector('#tasks').removeChild(item);
+    document.querySelector('#highest').removeChild(item);
 
     
     for (i = 0; i < stored.length; i++) {
@@ -61,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lastid += 1;
 
             // Add new element to our unordered list:
-            document.querySelector('#tasks').append(li);
+            document.querySelector('#highest').append(li);
         }
     }
     else {
@@ -106,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         lastid += 1;
 
         // Add new element to our unordered list:
-        document.querySelector('#tasks').append(li);
+        document.querySelector('#highest').append(li);
 
         // Add the new_task to the list
         cur_tasks.push(task);
