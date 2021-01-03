@@ -1,7 +1,5 @@
 // TO-DO List:
-// * Priority list
 // * Recently discarded
-// * Clocks
 // * Due Dates
 
 // Check if there is already a value in local storage
@@ -11,8 +9,61 @@ if (!localStorage.getItem('store_tasks')) {
     localStorage.setItem('store_tasks', []);
 }
 
+// Check if there is already a value in local storage
+if (!localStorage.getItem('deleted_tasks')) {
+
+    // If not, set the value to [] in local storage
+    localStorage.setItem('deleted_tasks', []);
+}
+
+function getUTCMinusSeven(date) {
+    if (date.getUTCHours() - 7 < 0) {
+        return 24 + (date.getUTCHours() - 7);
+    }
+    else {
+        return date.getUTCHours() - 7;
+    }
+}
+
+// For the clock
+function currentTime() {
+  var date = new Date(); /* creating object of Date class */
+  var year = date.getFullYear();
+  var day = date.getDate();
+  var month = date.getMonth() + 1;
+  year = updateTime(year);
+  day = updateTime(day);
+  month = updateTime(month);
+
+  var hour = date.getHours();
+  var min = date.getMinutes();
+  var sec = date.getSeconds();
+  hour = updateTime(hour);
+  min = updateTime(min);
+  sec = updateTime(sec);
+  // Personal Use
+  document.getElementById("clock").innerText = year + "/" + month + "/" + day + "\n" + 
+    getUTCMinusSeven(date) + " : " + min + " : " + sec + "(UTC-7) \xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
+  // Public Use
+  //document.getElementById("clock").innerText = hour + " : " + min + " : " + sec;
+  /* adding time to the div */
+  var t = setTimeout(function(){ currentTime() }, 1000); /* setting timer */
+}
+
+function updateTime(k) {
+  if (k < 10) {
+    return "0" + k;
+  }
+  else {
+    return k;
+  }
+}
+
+
+
 // Global Variables
 var cur_tasks = [];
+var del_tasks = [];
 var stored = [];
 var lastid = 0;
 
@@ -22,6 +73,7 @@ function clearList() {
     document.querySelector('#lowest').innerHTML = "Lowest Priority";
 
     cur_tasks = [];
+    del_tasks = [];
     stored = [];
 
     localStorage.setItem('store_tasks', []);
@@ -30,9 +82,9 @@ function clearList() {
 function removeName(itemid){
     var item = document.getElementById(itemid);
 
-    item.parentNode.removeChild(item);
+    //del_tasks.push(item);
 
-    //document.querySelector('#highest').removeChild(item);
+    item.parentNode.removeChild(item);
     
     for (i = 0; i < stored.length; i++) {
         if (stored[i][1] === item.firstChild.nodeValue) {
@@ -40,22 +92,15 @@ function removeName(itemid){
             break;
         }
     }
-    /*for (i = 0; i < cur_tasks.length; i++) {
-        if (cur_tasks[i][1] === item.firstChild.nodeValue) {
-            cur_tasks.splice(i, 1);
-            break;
-        }
-    }
-
-    for (x in cur_tasks) {
-        stored.push(x);
-    }*/
 
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 }
 
 // Wait for page to load
 document.addEventListener('DOMContentLoaded', function() {
+    // For the clock to initialize
+    currentTime();
+
     // Upon opening, put anything in the storage onto the list
     if (localStorage.getItem('store_tasks').length != 0) {
         stored = JSON.parse(localStorage.getItem('store_tasks'));

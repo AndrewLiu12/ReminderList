@@ -1,6 +1,38 @@
-ul {
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+
+#clock {
+  font-family: 'Orbitron', sans-serif;
+  color: #66ff99;
+  background-color: #121212;
+  font-size: 56px;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+#lowest {
 	color: blue;
 	font-size: x-large;
+}
+
+#medium {
+	color: blueviolet;
+	font-size: x-large;
+}
+
+#highest {
+	color: red;
+	font-size: x-large;
+}
+
+#discarded {
+	color: black;
+	font-size: x-large;
+}
+
+ul {
+	display: inline-block;
+	vertical-align: text-top;
 }
 
 li {
