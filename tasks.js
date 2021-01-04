@@ -76,23 +76,44 @@ function clearList() {
     del_tasks = [];
     stored = [];
 
+    localStorage.setItem('deleted_tasks', []);
     localStorage.setItem('store_tasks', []);
 }
 
-function removeName(itemid){
+function removeFromTrash(itemid) {
     var item = document.getElementById(itemid);
 
-    //del_tasks.push(item);
+    item.parentNode.removeChild(item);
+    
+    for (i = 0; i < del_tasks.length; i++) {
+        if (del_tasks[i] === item.firstChild.nodeValue) {
+            del_tasks.splice(i, 1);
+            break;
+        }
+    }
+
+    localStorage.setItem('deleted_tasks', JSON.stringify(del_tasks));
+}
+
+
+function removeFromLists(itemid) {
+    var item = document.getElementById(itemid);
 
     item.parentNode.removeChild(item);
     
     for (i = 0; i < stored.length; i++) {
         if (stored[i][1] === item.firstChild.nodeValue) {
+            del_tasks.push(item.firstChild.nodeValue);
             stored.splice(i, 1);
             break;
         }
     }
 
+    // Add new element to our unordered list:
+    item.childNodes[1].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
+    document.querySelector('#discarded').append(item);
+
+    localStorage.setItem('deleted_tasks', JSON.stringify(del_tasks));
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 }
 
@@ -110,24 +131,47 @@ document.addEventListener('DOMContentLoaded', function() {
             const li = document.createElement('li');
             //li.innerHTML = stored[i];
             li.appendChild(document.createTextNode(stored[i][1]));
-            li.setAttribute('id', 'item'+lastid);
+            li.setAttribute('id', 'item' + lastid);
             var removeButton = document.createElement('button');
             removeButton.appendChild(document.createTextNode("remove"));
-            removeButton.setAttribute('onClick', 'removeName("'+'item'+lastid+'")');
+            removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
             li.appendChild(removeButton);
 
             lastid += 1;
 
             // Add new element to our unordered list:
             //document.querySelector('#highest').append(li);
-            document.querySelector('#'+stored[i][0]).append(li);
+            document.querySelector('#' + stored[i][0]).append(li);
         }
     }
     else {
         stored = [];
     }
 
+    // Also upon opening check if anything in the deleted pile
+    if (localStorage.getItem('deleted_tasks').length != 0) {
+        del_tasks = JSON.parse(localStorage.getItem('deleted_tasks'));
+    
+        // Upon opening, load the list up 
+        for (i = 0; i < del_tasks.length; i++) {
+            const li = document.createElement('li');
+            li.appendChild(document.createTextNode(del_tasks[i]));
+            li.setAttribute('id', 'item' + lastid);
+            var removeButton = document.createElement('button');
+            removeButton.appendChild(document.createTextNode("remove"));
+            removeButton.setAttribute('onClick', 'removeFromTrash("' + 'item' + lastid + '")');
+            li.appendChild(removeButton);
 
+            lastid += 1;
+
+            // Add new element to our unordered list:
+            //document.querySelector('#highest').append(li);
+            document.querySelector('#discarded').append(li);
+        }
+    }
+    else {
+        del_tasks = [];
+    }
 
     // Select the submit button and input to be used later
     const submit = document.querySelector('#submit');
@@ -160,16 +204,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create a list item for the new task and add the task to it
         var li = document.createElement('li');
         li.appendChild(document.createTextNode(task));
-        li.setAttribute('id', 'item'+lastid);
+        li.setAttribute('id', 'item' + lastid);
         var removeButton = document.createElement('button');
         removeButton.appendChild(document.createTextNode("remove"));
-        removeButton.setAttribute('onClick', 'removeName("'+'item'+lastid+'")');
+        removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
         li.appendChild(removeButton);
 
         lastid += 1;
 
         // Add new element to our unordered list:
-        document.querySelector('#'+radio_val).append(li);
+        document.querySelector('#' + radio_val).append(li);
 
         // Add the new_task to the list
         //cur_tasks.push([radio_val, task]);
