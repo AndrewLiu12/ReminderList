@@ -140,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
             lastid += 1;
 
             // Add new element to our unordered list:
-            //document.querySelector('#highest').append(li);
             document.querySelector('#' + stored[i][0]).append(li);
         }
     }
