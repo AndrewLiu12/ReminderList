@@ -110,6 +110,7 @@ function removeFromLists(itemid) {
     }
 
     // Add new element to our unordered list:
+    item.childNodes[1].innerHTML = "remove";
     item.childNodes[1].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
     document.querySelector('#discarded').append(item);
 
@@ -133,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
             li.appendChild(document.createTextNode(stored[i][1]));
             li.setAttribute('id', 'item' + lastid);
             var removeButton = document.createElement('button');
-            removeButton.appendChild(document.createTextNode("remove"));
+            removeButton.appendChild(document.createTextNode("move to trash"));
             removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
             li.appendChild(removeButton);
 
@@ -205,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
         li.appendChild(document.createTextNode(task));
         li.setAttribute('id', 'item' + lastid);
         var removeButton = document.createElement('button');
-        removeButton.appendChild(document.createTextNode("remove"));
+        removeButton.appendChild(document.createTextNode("move to trash"));
         removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
         li.appendChild(removeButton);
 
