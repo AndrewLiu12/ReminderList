@@ -42,10 +42,10 @@ function currentTime() {
   min = updateTime(min);
   sec = updateTime(sec);
   // Personal Use
-  //document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\n" + 
-  //  getUTCMinusSeven(date) + " : " + min + " : " + sec + "(UTC-7) \xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
+  document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\n" + 
+    getUTCMinusSeven(date) + " : " + min + " : " + sec + "(UTC-7) \xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
   // Public Use
-  document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
+  //document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
   /* adding time to the div */
   var t = setTimeout(function(){ currentTime() }, 1000); /* setting timer */
 }

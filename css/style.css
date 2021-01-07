@@ -39,3 +39,17 @@ li {
 	color: black;
 	font-size: initial;
 }
+
+.flex-container {
+    display: flex;
+    border: 2px solid black;
+}
+
+.flex-child {
+    flex: 1;
+    border: 2px solid yellow;
+}  
+
+/*.flex-child:first-child {
+    margin-right: 20px;
+}*/
