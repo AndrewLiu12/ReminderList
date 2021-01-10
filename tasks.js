@@ -41,11 +41,9 @@ function currentTime() {
   hour = updateTime(hour);
   min = updateTime(min);
   sec = updateTime(sec);
-  // Personal Use
-  document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\n" + 
-    getUTCMinusSeven(date) + " : " + min + " : " + sec + "(UTC-7) \xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
-  // Public Use
-  //document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
+  // Optional Clock
+  //document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\n" + 
+  //  getUTCMinusSeven(date) + " : " + min + " : " + sec + "(UTC-7) \xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
   /* adding time to the div */
   var t = setTimeout(function(){ currentTime() }, 1000); /* setting timer */
 }
@@ -118,6 +116,21 @@ function removeFromLists(itemid) {
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 }
 
+
+function makeVisible(itemid) {
+    var item = document.getElementById(itemid);
+
+    item.childNodes[1].style.visibility = "visible";
+}
+
+
+function makeInvisible(itemid) {
+    var item = document.getElementById(itemid);
+
+    item.childNodes[1].style.visibility = "hidden";
+}
+
+
 // Wait for page to load
 document.addEventListener('DOMContentLoaded', function() {
     // For the clock to initialize
@@ -133,9 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
             //li.innerHTML = stored[i];
             li.appendChild(document.createTextNode(stored[i][1]));
             li.setAttribute('id', 'item' + lastid);
+            li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
+            li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
             var removeButton = document.createElement('button');
             removeButton.appendChild(document.createTextNode("move to trash"));
             removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
+            removeButton.style.visibility = "hidden";
             li.appendChild(removeButton);
 
             lastid += 1;
@@ -157,9 +173,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const li = document.createElement('li');
             li.appendChild(document.createTextNode(del_tasks[i]));
             li.setAttribute('id', 'item' + lastid);
+            li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
+            li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
             var removeButton = document.createElement('button');
             removeButton.appendChild(document.createTextNode("remove"));
             removeButton.setAttribute('onClick', 'removeFromTrash("' + 'item' + lastid + '")');
+            removeButton.style.visibility = "hidden";
             li.appendChild(removeButton);
 
             lastid += 1;
@@ -205,9 +224,12 @@ document.addEventListener('DOMContentLoaded', function() {
         var li = document.createElement('li');
         li.appendChild(document.createTextNode(task));
         li.setAttribute('id', 'item' + lastid);
+        li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
+        li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
         var removeButton = document.createElement('button');
         removeButton.appendChild(document.createTextNode("move to trash"));
         removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
+        removeButton.style.visibility = "hidden";
         li.appendChild(removeButton);
 
         lastid += 1;

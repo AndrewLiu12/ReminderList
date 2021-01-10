@@ -30,14 +30,20 @@
 	font-size: x-large;
 }
 
+
 ul {
 	display: inline-block;
 	vertical-align: text-top;
+	font-family: Verdana, sans-serif;
 }
 
 li {
 	color: black;
 	font-size: initial;
+}
+
+input {
+	font-family: Verdana, sans-serif;
 }
 
 .flex-container {
