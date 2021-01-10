@@ -1,5 +1,4 @@
 // TO-DO List:
-// * Recently discarded
 // * Due Dates
 
 // Check if there is already a value in local storage
@@ -9,13 +8,13 @@ if (!localStorage.getItem('store_tasks')) {
     localStorage.setItem('store_tasks', []);
 }
 
-// Check if there is already a value in local storage
+// CSame as above
 if (!localStorage.getItem('deleted_tasks')) {
 
-    // If not, set the value to [] in local storage
     localStorage.setItem('deleted_tasks', []);
 }
 
+// This is for calculating the UTC - 7 current time
 function getUTCMinusSeven(date) {
     if (date.getUTCHours() - 7 < 0) {
         return 24 + (date.getUTCHours() - 7);
@@ -48,6 +47,7 @@ function currentTime() {
   var t = setTimeout(function(){ currentTime() }, 1000); /* setting timer */
 }
 
+// If the time is less than 10, have a 0 in front
 function updateTime(k) {
   if (k < 10) {
     return "0" + k;
@@ -58,13 +58,18 @@ function updateTime(k) {
 }
 
 
-
 // Global Variables
+// Current tasks in the webpage
 var cur_tasks = [];
+// In the recently deleted pile
 var del_tasks = [];
+// Pulls the tasks from the local storage and places then here
+// 2-D array for which list, and what it says
 var stored = [];
+// Allows elements to have unique ids
 var lastid = 0;
 
+// A clear all function to remove everything
 function clearList() {
     document.querySelector('#highest').innerHTML = "Highest Priority";
     document.querySelector('#medium').innerHTML = "Medium Priority";
@@ -78,6 +83,9 @@ function clearList() {
     localStorage.setItem('store_tasks', []);
 }
 
+// This is for tasks that are in the recently deleted pile
+// Looks for it, and deletes it both from webpage and the array variable
+// Then updates the local storage
 function removeFromTrash(itemid) {
     var item = document.getElementById(itemid);
 
@@ -93,7 +101,9 @@ function removeFromTrash(itemid) {
     localStorage.setItem('deleted_tasks', JSON.stringify(del_tasks));
 }
 
-
+// This is for tasks that are in one of the priority lists
+// Looks for it, and deletes it both from webpage and the array variable
+// Changes the button name, then updates the local storage
 function removeFromLists(itemid) {
     var item = document.getElementById(itemid);
 
@@ -116,13 +126,12 @@ function removeFromLists(itemid) {
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 }
 
-
+// For changing the visibility of the buttons to delete tasks
 function makeVisible(itemid) {
     var item = document.getElementById(itemid);
 
     item.childNodes[1].style.visibility = "visible";
 }
-
 
 function makeInvisible(itemid) {
     var item = document.getElementById(itemid);
@@ -143,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Upon opening, load the list up 
         for (i = 0; i < stored.length; i++) {
             const li = document.createElement('li');
-            //li.innerHTML = stored[i];
             li.appendChild(document.createTextNode(stored[i][1]));
             li.setAttribute('id', 'item' + lastid);
             li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
@@ -184,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
             lastid += 1;
 
             // Add new element to our unordered list:
-            //document.querySelector('#highest').append(li);
             document.querySelector('#discarded').append(li);
         }
     }
@@ -214,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listen for submission of form
     document.querySelector('form').onsubmit = () => {
         // Check which radio button was selected
-        //console.log(document.querySelector('input[name="priority"]:checked').value);
         var radio_val = document.querySelector('input[name="priority"]:checked').value;
 
         // Find the task the user just submitted
@@ -236,9 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add new element to our unordered list:
         document.querySelector('#' + radio_val).append(li);
-
-        // Add the new_task to the list
-        //cur_tasks.push([radio_val, task]);
 
         // Clear out input field:
         newTask.value = '';
