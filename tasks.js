@@ -1,5 +1,6 @@
 // TO-DO List:
 // * Due Dates
+// * Make Icons
 
 // Check if there is already a value in local storage
 if (!localStorage.getItem('store_tasks')) {
@@ -41,8 +42,8 @@ function currentTime() {
   min = updateTime(min);
   sec = updateTime(sec);
   // Optional Clock
-  //document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\n" + 
-  //  getUTCMinusSeven(date) + " : " + min + " : " + sec + "(UTC-7) \xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
+  document.getElementById("clock").innerText = day + "/" + month + "/" + year + "\n" + 
+    getUTCMinusSeven(date) + " : " + min + " : " + sec + "(UTC-7) \xa0\xa0\xa0\xa0\xa0" + hour + " : " + min + " : " + sec;
   /* adding time to the div */
   var t = setTimeout(function(){ currentTime() }, 1000); /* setting timer */
 }
@@ -140,6 +141,26 @@ function makeInvisible(itemid) {
 }
 
 
+// For adding a list item to one of the lists (including recently deleted)
+function addListItem(listItem, itemLoc) {
+    var li = document.createElement('li');
+
+    li.appendChild(document.createTextNode(listItem));
+    li.setAttribute('id', 'item' + lastid);
+    li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
+    li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
+    var removeButton = document.createElement('button');
+    removeButton.appendChild(document.createTextNode("move to trash"));
+    removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
+    removeButton.style.visibility = "hidden";
+    li.appendChild(removeButton);
+
+    lastid += 1;
+
+    // Add new element to our unordered list:
+    document.querySelector('#' + itemLoc).append(li);
+}
+
 // Wait for page to load
 document.addEventListener('DOMContentLoaded', function() {
     // For the clock to initialize
@@ -151,21 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Upon opening, load the list up 
         for (i = 0; i < stored.length; i++) {
-            const li = document.createElement('li');
-            li.appendChild(document.createTextNode(stored[i][1]));
-            li.setAttribute('id', 'item' + lastid);
-            li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
-            li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
-            var removeButton = document.createElement('button');
-            removeButton.appendChild(document.createTextNode("move to trash"));
-            removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
-            removeButton.style.visibility = "hidden";
-            li.appendChild(removeButton);
-
-            lastid += 1;
-
-            // Add new element to our unordered list:
-            document.querySelector('#' + stored[i][0]).append(li);
+            addListItem(stored[i][1], stored[i][0]);
         }
     }
     else {
@@ -178,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Upon opening, load the list up 
         for (i = 0; i < del_tasks.length; i++) {
-            const li = document.createElement('li');
+            var li = document.createElement('li');
             li.appendChild(document.createTextNode(del_tasks[i]));
             li.setAttribute('id', 'item' + lastid);
             li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
@@ -226,22 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Find the task the user just submitted
         const task = newTask.value;
 
-        // Create a list item for the new task and add the task to it
-        var li = document.createElement('li');
-        li.appendChild(document.createTextNode(task));
-        li.setAttribute('id', 'item' + lastid);
-        li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
-        li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
-        var removeButton = document.createElement('button');
-        removeButton.appendChild(document.createTextNode("move to trash"));
-        removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
-        removeButton.style.visibility = "hidden";
-        li.appendChild(removeButton);
-
-        lastid += 1;
-
-        // Add new element to our unordered list:
-        document.querySelector('#' + radio_val).append(li);
+        addListItem(task, radio_val);
 
         // Clear out input field:
         newTask.value = '';
