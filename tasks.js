@@ -140,6 +140,28 @@ function makeInvisible(itemid) {
     item.childNodes[1].style.visibility = "hidden";
 }
 
+// Fix name later
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+
 
 // For adding a list item to one of the lists (including recently deleted)
 function addListItem(listItem, itemLoc) {
@@ -149,11 +171,42 @@ function addListItem(listItem, itemLoc) {
     li.setAttribute('id', 'item' + lastid);
     li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
     li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
+
+    
     var removeButton = document.createElement('button');
     removeButton.appendChild(document.createTextNode("move to trash"));
     removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
     removeButton.style.visibility = "hidden";
-    li.appendChild(removeButton);
+    li.appendChild(removeButton); 
+
+    var div = document.createElement('div');
+    div.setAttribute('class', 'dropdown');
+    li.appendChild(div);
+
+    var aboutButton = document.createElement('button');
+    aboutButton.innerText = "Dropdown";
+    aboutButton.setAttribute('onClick', 'myFunction()');
+    aboutButton.setAttribute('class', 'dropbtn');
+    div.appendChild(aboutButton);
+
+    var innerdiv = document.createElement('div');
+    innerdiv.setAttribute('id', 'myDropdown');
+    innerdiv.setAttribute('class', 'dropdown-content');
+    div.appendChild(innerdiv);
+
+    var remove_anchor = document.createElement('a');
+    remove_anchor.setAttribute('href', '#remove');
+    remove_anchor.innerText = "Remove";
+    innerdiv.appendChild(remove_anchor);
+    var move_1_anchor = document.createElement('a');
+    move_1_anchor.setAttribute('href', '#move_1');
+    move_1_anchor.innerText = "Move Somewhere";
+    innerdiv.appendChild(move_1_anchor);
+    var move_2_anchor = document.createElement('a');
+    move_2_anchor.setAttribute('href', '#move_2');
+    move_2_anchor.innerText = "Move Elsewhere";
+    innerdiv.appendChild(move_2_anchor);
+
 
     lastid += 1;
 
