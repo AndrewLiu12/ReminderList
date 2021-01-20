@@ -72,6 +72,8 @@ var lastid = 0;
 
 // A clear all function to remove everything
 function clearList() {
+    // Optional Use 
+    /*
     document.querySelector('#highest').innerHTML = "Highest Priority";
     document.querySelector('#medium').innerHTML = "Medium Priority";
     document.querySelector('#lowest').innerHTML = "Lowest Priority";
@@ -81,7 +83,7 @@ function clearList() {
     stored = [];
 
     localStorage.setItem('deleted_tasks', []);
-    localStorage.setItem('store_tasks', []);
+    localStorage.setItem('store_tasks', []);*/
 }
 
 // This is for tasks that are in the recently deleted pile
@@ -118,9 +120,15 @@ function removeFromLists(itemid) {
         }
     }
 
-    // Add new element to our unordered list:
+    // Changes what the button of list item does
     item.childNodes[1].innerHTML = "remove";
     item.childNodes[1].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
+
+    // Changes what the first item in dropdown menu of about button does
+    item.childNodes[2].childNodes[1].childNodes[0].innerHTML = "Completely Remove";
+    item.childNodes[2].childNodes[1].childNodes[0].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
+    
+
     document.querySelector('#discarded').append(item);
 
     localStorage.setItem('deleted_tasks', JSON.stringify(del_tasks));
@@ -143,8 +151,8 @@ function makeInvisible(itemid) {
 // Fix name later
 /* When the user clicks on the button, 
 toggle between hiding and showing the dropdown content */
-function myFunction() {
-  document.getElementById("myDropdown").classList.toggle("show");
+function myFunction(dropdownid) {
+  document.getElementById("myDropdown" + dropdownid).classList.toggle("show");
 }
 
 // Close the dropdown if the user clicks outside of it
@@ -179,31 +187,40 @@ function addListItem(listItem, itemLoc) {
     removeButton.style.visibility = "hidden";
     li.appendChild(removeButton); 
 
+
     var div = document.createElement('div');
     div.setAttribute('class', 'dropdown');
     li.appendChild(div);
 
+
     var aboutButton = document.createElement('button');
     aboutButton.innerText = "Dropdown";
-    aboutButton.setAttribute('onClick', 'myFunction()');
+    aboutButton.setAttribute('onClick', 'myFunction("' + lastid + '")');
     aboutButton.setAttribute('class', 'dropbtn');
     div.appendChild(aboutButton);
 
+
     var innerdiv = document.createElement('div');
-    innerdiv.setAttribute('id', 'myDropdown');
+    innerdiv.setAttribute('id', 'myDropdown' + lastid);
     innerdiv.setAttribute('class', 'dropdown-content');
     div.appendChild(innerdiv);
 
+
     var remove_anchor = document.createElement('a');
     remove_anchor.setAttribute('href', '#remove');
-    remove_anchor.innerText = "Remove";
+    remove_anchor.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
+    remove_anchor.innerText = "Move To Trash";
     innerdiv.appendChild(remove_anchor);
+
     var move_1_anchor = document.createElement('a');
     move_1_anchor.setAttribute('href', '#move_1');
+    move_1_anchor.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
     move_1_anchor.innerText = "Move Somewhere";
     innerdiv.appendChild(move_1_anchor);
+
     var move_2_anchor = document.createElement('a');
     move_2_anchor.setAttribute('href', '#move_2');
+    move_2_anchor.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
     move_2_anchor.innerText = "Move Elsewhere";
     innerdiv.appendChild(move_2_anchor);
 
