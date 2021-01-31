@@ -125,9 +125,12 @@ function removeFromLists(itemid) {
     item.childNodes[1].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
 
     // Changes what the first item in dropdown menu of about button does
-    item.childNodes[2].childNodes[1].childNodes[0].innerHTML = "Completely Remove";
-    item.childNodes[2].childNodes[1].childNodes[0].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
+    var dropmenu = item.childNodes[2].childNodes[1];
+    dropmenu.childNodes[0].innerHTML = "Completely Remove";
+    dropmenu.childNodes[0].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
     
+    dropmenu.removeChild(dropmenu.childNodes[2]);
+    dropmenu.removeChild(dropmenu.childNodes[1]);
 
     document.querySelector('#discarded').append(item);
 
@@ -140,12 +143,14 @@ function makeVisible(itemid) {
     var item = document.getElementById(itemid);
 
     item.childNodes[1].style.visibility = "visible";
+    item.childNodes[2].childNodes[0].style.visibility = "visible";
 }
 
 function makeInvisible(itemid) {
     var item = document.getElementById(itemid);
 
     item.childNodes[1].style.visibility = "hidden";
+    item.childNodes[2].childNodes[0].style.visibility = "hidden";
 }
 
 // Fix name later
@@ -187,13 +192,9 @@ function moveHigh(itemid, dropdownid) {
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 
     var dropmenu = document.getElementById(dropdownid);
-
     dropmenu.childNodes[1].innerText = "Move To Medium Prioriy";
-
     dropmenu.childNodes[1].setAttribute('onClick', 'moveMid("' + itemid + '","' + dropdownid + '")');
-
     dropmenu.childNodes[2].innerText = "Move To Lowest Prioriy";
-
     dropmenu.childNodes[2].setAttribute('onClick', 'moveLow("' + itemid + '","' + dropdownid + '")');
 }
 
@@ -214,13 +215,9 @@ function moveMid(itemid, dropdownid) {
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 
     var dropmenu = document.getElementById(dropdownid);
-
     dropmenu.childNodes[1].innerText = "Move To Highest Prioriy";
-
     dropmenu.childNodes[1].setAttribute('onClick', 'moveHigh("' + itemid + '","' + dropdownid + '")');
-
     dropmenu.childNodes[2].innerText = "Move To Lowest Prioriy";
-
     dropmenu.childNodes[2].setAttribute('onClick', 'moveLow("' + itemid + '","' + dropdownid + '")');
 }
 
@@ -251,7 +248,7 @@ function moveLow(itemid, dropdownid) {
 
 
 // For adding a list item to one of the lists (including recently deleted)
-function addListItem(listItem, itemLoc) {
+function addListItem(listItem, itemLoc, click_function) {
     var li = document.createElement('li');
 
     li.appendChild(document.createTextNode(listItem));
@@ -261,8 +258,14 @@ function addListItem(listItem, itemLoc) {
 
     
     var removeButton = document.createElement('button');
-    removeButton.appendChild(document.createTextNode("move to trash"));
-    removeButton.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
+    if (click_function === 'removeFromLists') {
+        removeButton.appendChild(document.createTextNode("move to trash"));
+    }
+    else {
+        removeButton.appendChild(document.createTextNode("remove"));
+    }
+    
+    removeButton.setAttribute('onClick', click_function + '("' + 'item' + lastid + '")');
     removeButton.style.visibility = "hidden";
     li.appendChild(removeButton); 
 
@@ -273,9 +276,10 @@ function addListItem(listItem, itemLoc) {
 
 
     var aboutButton = document.createElement('button');
-    aboutButton.innerText = "Dropdown";
+    aboutButton.innerText = "...";
     aboutButton.setAttribute('onClick', 'showDropdown("' + lastid + '")');
     aboutButton.setAttribute('class', 'dropbtn');
+    aboutButton.style.visibility = "hidden";
     div.appendChild(aboutButton);
 
 
@@ -287,44 +291,51 @@ function addListItem(listItem, itemLoc) {
 
     var remove_anchor = document.createElement('a');
     remove_anchor.setAttribute('id', 'remove');
-    remove_anchor.setAttribute('onClick', 'removeFromLists("' + 'item' + lastid + '")');
-    remove_anchor.innerText = "Move To Trash";
+    remove_anchor.setAttribute('onClick', click_function + '("' + 'item' + lastid + '")');
+    if (click_function === 'removeFromLists') {
+        remove_anchor.innerText = "Move To Trash";
+    }
+    else {
+        remove_anchor.innerText = "Completely Remove";   
+    }
     innerdiv.appendChild(remove_anchor);
 
 
-    // When having loops inside function called by a loop
-    // Can't have same name for loop counter
-    for (j = 0; j < 3; j++) {
-        var anchor = document.createElement('a');
-        if ((itemLoc === 'highest') && (j === 0)) {
-            continue;
-        }
-        else if ((itemLoc === 'medium') && (j === 1)) {
-            continue;
-        }
-        else if ((itemLoc === 'lowest') && (j === 2)) {
-            continue;
-        }
-        else {
-            console.log("not yet");
-        }
+    if (click_function === 'removeFromLists') {
+        // When having loops inside function called by a loop
+        // Can't have same name for loop counter
+        for (j = 0; j < 3; j++) {
+            var anchor = document.createElement('a');
+            if ((itemLoc === 'highest') && (j === 0)) {
+                continue;
+            }
+            else if ((itemLoc === 'medium') && (j === 1)) {
+                continue;
+            }
+            else if ((itemLoc === 'lowest') && (j === 2)) {
+                continue;
+            }
+            else {
+                console.log("not yet");
+            }
 
-        if (j === 0) {
-            //anchor.setAttribute('id', 'movehighest' + lastid);
-            anchor.setAttribute('onClick', 'moveHigh("' + 'item' + lastid + '","myDropdown' + lastid + '")');
-            anchor.innerText = "Move To Highest Prioriy";    
+            if (j === 0) {
+                //anchor.setAttribute('id', 'movehighest' + lastid);
+                anchor.setAttribute('onClick', 'moveHigh("' + 'item' + lastid + '","myDropdown' + lastid + '")');
+                anchor.innerText = "Move To Highest Prioriy";    
+            }
+            else if (j === 1) {
+                //anchor.setAttribute('id', 'movehighest' + lastid);
+                anchor.setAttribute('onClick', 'moveMid("' + 'item' + lastid + '","myDropdown' + lastid + '")');
+                anchor.innerText = "Move To Medium Prioriy";    
+            }
+            else if (j === 2) {
+                //anchor.setAttribute('id', 'movehighest' + lastid);
+                anchor.setAttribute('onClick', 'moveLow("' + 'item' + lastid + '","myDropdown' + lastid + '")');
+                anchor.innerText = "Move To Lowest Prioriy";    
+            }
+            innerdiv.appendChild(anchor);
         }
-        else if (j === 1) {
-            //anchor.setAttribute('id', 'movehighest' + lastid);
-            anchor.setAttribute('onClick', 'moveMid("' + 'item' + lastid + '","myDropdown' + lastid + '")');
-            anchor.innerText = "Move To Medium Prioriy";    
-        }
-        else if (j === 2) {
-            //anchor.setAttribute('id', 'movehighest' + lastid);
-            anchor.setAttribute('onClick', 'moveLow("' + 'item' + lastid + '","myDropdown' + lastid + '")');
-            anchor.innerText = "Move To Lowest Prioriy";    
-        }
-        innerdiv.appendChild(anchor);
     }
 
 
@@ -345,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Upon opening, load the list up 
         for (i = 0; i < stored.length; i++) {
-            addListItem(stored[i][1], stored[i][0]);   
+            addListItem(stored[i][1], stored[i][0], 'removeFromLists');
         }
     }
     else {
@@ -358,21 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Upon opening, load the list up 
         for (i = 0; i < del_tasks.length; i++) {
-            var li = document.createElement('li');
-            li.appendChild(document.createTextNode(del_tasks[i]));
-            li.setAttribute('id', 'item' + lastid);
-            li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
-            li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
-            var removeButton = document.createElement('button');
-            removeButton.appendChild(document.createTextNode("remove"));
-            removeButton.setAttribute('onClick', 'removeFromTrash("' + 'item' + lastid + '")');
-            removeButton.style.visibility = "hidden";
-            li.appendChild(removeButton);
-
-            lastid += 1;
-
-            // Add new element to our unordered list:
-            document.querySelector('#discarded').append(li);
+            addListItem(del_tasks[i], 'discarded', 'removeFromTrash');
         }
     }
     else {
@@ -406,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Find the task the user just submitted
         const task = newTask.value;
 
-        addListItem(task, radio_val);
+        addListItem(task, radio_val, 'removeFromLists');
 
         // Clear out input field:
         newTask.value = '';
