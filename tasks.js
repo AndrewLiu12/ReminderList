@@ -129,6 +129,7 @@ function removeFromLists(itemid) {
     dropmenu.childNodes[0].innerHTML = "Completely Remove";
     dropmenu.childNodes[0].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
     
+    // Leaves only one option for now
     dropmenu.removeChild(dropmenu.childNodes[2]);
     dropmenu.removeChild(dropmenu.childNodes[1]);
 
@@ -174,7 +175,7 @@ window.onclick = function(event) {
     }
 }
 
-
+// Functions for changing the text based off where the task has moved
 function moveHigh(itemid, dropdownid) {
     var item = document.getElementById(itemid);
 
@@ -246,6 +247,12 @@ function moveLow(itemid, dropdownid) {
     dropmenu.childNodes[2].setAttribute('onClick', 'moveMid("' + itemid + '","' + dropdownid + '")');
 }
 
+// Allows the user to edit what the tasks say
+function editTask(itemid) {
+    var item = document.getElementById(itemid);
+
+    item.childNodes[0].nodeValue = "Testing value";
+}
 
 // For adding a list item to one of the lists (including recently deleted)
 function addListItem(listItem, itemLoc, click_function) {
@@ -270,6 +277,7 @@ function addListItem(listItem, itemLoc, click_function) {
     li.appendChild(removeButton); 
 
 
+    // Creates a dropdown menu
     var div = document.createElement('div');
     div.setAttribute('class', 'dropdown');
     li.appendChild(div);
@@ -288,7 +296,7 @@ function addListItem(listItem, itemLoc, click_function) {
     innerdiv.setAttribute('class', 'dropdown-content');
     div.appendChild(innerdiv);
 
-
+    // This is the option for removing the task
     var remove_anchor = document.createElement('a');
     remove_anchor.setAttribute('id', 'remove');
     remove_anchor.setAttribute('onClick', click_function + '("' + 'item' + lastid + '")');
@@ -300,6 +308,13 @@ function addListItem(listItem, itemLoc, click_function) {
     }
     innerdiv.appendChild(remove_anchor);
 
+
+    // This is the option for editing the task
+    var edit_anchor = document.createElement('a');
+    edit_anchor.setAttribute('id', 'edit');
+    edit_anchor.setAttribute('onClick', 'editTask("' + 'item' + lastid + '")');
+    edit_anchor.innerText = "Edit Task";
+    innerdiv.appendChild(edit_anchor);
 
     if (click_function === 'removeFromLists') {
         // When having loops inside function called by a loop
