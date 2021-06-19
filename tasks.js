@@ -58,6 +58,44 @@ function updateTime(k) {
   }
 }
 
+//Initialize the day downscroll bar
+function makeDayList() {
+    const dayslist = document.getElementById("day");
+    for (let i = 1; i < 32; i++) {
+        // One way to do it 
+        //const para = document.createElement("option");
+        //const node = document.createTextNode(1);
+        //para.appendChild(node);
+        //dayslist.appendChild(para);
+
+        // Other easier way
+        dayslist.innerHTML += "<option>" + i + "</option>"
+        
+        //console.log(para);
+        //console.log(dayslist.innerHTML);
+
+        //dayslist.innerHTML += "<option>2</option>"
+
+        //console.log(dayslist.innerHTML);
+        //para = document.createElement("option");
+        //node = document.createTextNode(2);
+        //para.appendChild(node);
+        //dayslist.appendChild(para);
+    }
+    document.getElementById("month").disabled = true;
+    dayslist.disabled = true;
+}
+
+//Initialize the year downscroll bar
+function makeYearList() {
+    var date = new Date(); /* creating object of Date class */
+    var year = date.getFullYear();
+    const yearslist = document.getElementById("year");
+    for (let i = year; i < year + 100; i++) {
+        yearslist.innerHTML += "<option>" + i + "</option>"
+    }
+    yearslist.disabled = true;
+}
 
 // Global Variables
 // Current tasks in the webpage
@@ -143,14 +181,14 @@ function removeFromLists(itemid) {
 function makeVisible(itemid) {
     var item = document.getElementById(itemid);
 
-    item.childNodes[1].style.visibility = "visible";
+    //item.childNodes[1].style.visibility = "visible";
     item.childNodes[2].childNodes[0].style.visibility = "visible";
 }
 
 function makeInvisible(itemid) {
     var item = document.getElementById(itemid);
 
-    item.childNodes[1].style.visibility = "hidden";
+    //item.childNodes[1].style.visibility = "hidden";
     item.childNodes[2].childNodes[0].style.visibility = "hidden";
 }
 
@@ -193,10 +231,10 @@ function moveHigh(itemid, dropdownid) {
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 
     var dropmenu = document.getElementById(dropdownid);
-    dropmenu.childNodes[1].innerText = "Move To Medium Prioriy";
-    dropmenu.childNodes[1].setAttribute('onClick', 'moveMid("' + itemid + '","' + dropdownid + '")');
-    dropmenu.childNodes[2].innerText = "Move To Lowest Prioriy";
-    dropmenu.childNodes[2].setAttribute('onClick', 'moveLow("' + itemid + '","' + dropdownid + '")');
+    dropmenu.childNodes[2].innerText = "Move To Medium Prioriy";
+    dropmenu.childNodes[2].setAttribute('onClick', 'moveMid("' + itemid + '","' + dropdownid + '")');
+    dropmenu.childNodes[3].innerText = "Move To Lowest Prioriy";
+    dropmenu.childNodes[3].setAttribute('onClick', 'moveLow("' + itemid + '","' + dropdownid + '")');
 }
 
 function moveMid(itemid, dropdownid) {
@@ -216,10 +254,10 @@ function moveMid(itemid, dropdownid) {
     localStorage.setItem('store_tasks', JSON.stringify(stored));
 
     var dropmenu = document.getElementById(dropdownid);
-    dropmenu.childNodes[1].innerText = "Move To Highest Prioriy";
-    dropmenu.childNodes[1].setAttribute('onClick', 'moveHigh("' + itemid + '","' + dropdownid + '")');
-    dropmenu.childNodes[2].innerText = "Move To Lowest Prioriy";
-    dropmenu.childNodes[2].setAttribute('onClick', 'moveLow("' + itemid + '","' + dropdownid + '")');
+    dropmenu.childNodes[2].innerText = "Move To Highest Prioriy";
+    dropmenu.childNodes[2].setAttribute('onClick', 'moveHigh("' + itemid + '","' + dropdownid + '")');
+    dropmenu.childNodes[3].innerText = "Move To Lowest Prioriy";
+    dropmenu.childNodes[3].setAttribute('onClick', 'moveLow("' + itemid + '","' + dropdownid + '")');
 }
 
 function moveLow(itemid, dropdownid) {
@@ -240,11 +278,11 @@ function moveLow(itemid, dropdownid) {
 
     var dropmenu = document.getElementById(dropdownid);
     // Changing the second menu item
-    dropmenu.childNodes[1].innerText = "Move To Highest Prioriy";
-    dropmenu.childNodes[1].setAttribute('onClick', 'moveHigh("' + itemid + '","' + dropdownid + '")');
+    dropmenu.childNodes[2].innerText = "Move To Highest Prioriy";
+    dropmenu.childNodes[2].setAttribute('onClick', 'moveHigh("' + itemid + '","' + dropdownid + '")');
     // Changing the last menu item
-    dropmenu.childNodes[2].innerText = "Move To Medium Prioriy";
-    dropmenu.childNodes[2].setAttribute('onClick', 'moveMid("' + itemid + '","' + dropdownid + '")');
+    dropmenu.childNodes[3].innerText = "Move To Medium Prioriy";
+    dropmenu.childNodes[3].setAttribute('onClick', 'moveMid("' + itemid + '","' + dropdownid + '")');
 }
 
 // Allows the user to edit what the tasks say
@@ -360,10 +398,15 @@ function addListItem(listItem, itemLoc, click_function) {
     document.querySelector('#' + itemLoc).append(li);
 }
 
+
 // Wait for page to load
 document.addEventListener('DOMContentLoaded', function() {
     // For the clock to initialize
     currentTime();
+
+    // Initialize the lists for the day and the year
+    makeDayList();
+    makeYearList();
 
     // Upon opening, put anything in the storage onto the list
     if (localStorage.getItem('store_tasks').length != 0) {
@@ -399,6 +442,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Disable submit button by default:
     submit.disabled = true;
+
+    // These must be placed inside the load function
+    // Enables the date feature if the date button is checked
+    document.getElementById("due_date_have").onclick = () => {
+        document.getElementById("month").disabled = false;
+        document.getElementById("day").disabled = false;
+        document.getElementById("year").disabled = false;
+    }
+    // Disables the date feature if the date button is checked
+    document.getElementById("due_date_not").onclick = () => {
+        document.getElementById("month").disabled = true;
+        document.getElementById("day").disabled = true;
+        document.getElementById("year").disabled = true;
+    }
+
+
 
     // Listen for input to be typed into the input field
     newTask.onkeyup = () => {

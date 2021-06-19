@@ -13,6 +13,7 @@
 #lowest {
 	color: blue;
 	font-size: x-large;
+	/*font-size: 56px;*/
 }
 
 #medium {
@@ -30,20 +31,28 @@
 	font-size: x-large;
 }
 
+label  {
+	font-size: 20px;
+}
+
+
 
 ul {
 	display: inline-block;
 	vertical-align: text-top;
 	font-family: Verdana, sans-serif;
+
 }
 
 li {
 	color: black;
 	font-size: initial;
+	font-size: 20px
 }
 
 input {
 	font-family: Verdana, sans-serif;
+	font-size: 20px
 }
 
 .flex-container {

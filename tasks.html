@@ -7,16 +7,47 @@
         <script src="tasks.js"></script>
     </head>
     <form>
-        <input id="task" placeholder = "New Task" type="text">
-        <!-- Same as new line -->
-        <br>
-        <!-- Radio buttons, as long as they have the same "name" value, it will be grouped -->
-        <input type="radio" id="high" name="priority" value="highest">
-        <label for="high">Highest</label><br>
-        <input type="radio" id="mid" name="priority" value="medium" checked="checked">
-        <label for="female">Medium</label><br>
-        <input type="radio" id="low" name="priority" value="lowest">
-        <label for="other">Lowest</label>
+        <h2>
+            <input id="task" placeholder = "New Task" type="text">
+            <!-- Same as new line command -->
+            <br>
+            <!-- Radio buttons, as long as they have the same "name" value, it will be grouped -->
+            <input type="radio" id="high" name="priority" value="highest">
+            <label for="high">Highest</label>
+            <input type="radio" id="mid" name="priority" value="medium" checked="checked">
+            <label for="mid">Medium</label>
+            <input type="radio" id="low" name="priority" value="lowest">
+            <label for="low">Lowest</label>
+        </h2>
+
+        <h2>Due Date:
+            <input type="radio" id="due_date_have" name="due_date" value="yes_due_date">
+            <label for="due_date_have">True</label>
+            <input type="radio" id="due_date_not" name="due_date" value="no_due_date" checked="checked">
+            <label for="due_date_not">False</label>
+            <br>
+            <label for="month">Month:</label>
+            <select id="month" name="monthlist">
+                <option value='01'>January</option>
+                <option value='02'>February</option>
+                <option value='03'>March</option>
+                <option value='04'>April</option>
+                <option value='05'>May</option>
+                <option value='06'>June</option>
+                <option value='07'>July</option>
+                <option value='08'>August</option>
+                <option value='09'>September</option>
+                <option value='10'>October</option>
+                <option value='11'>November</option>
+                <option value='12'>December</option>
+            </select>
+            <label for="day">Day:</label>
+            <select id="day" name="daylist">
+            </select>
+            <label for="year">Year:</label>
+            <select id="year" name="yearlist">
+            </select>
+        </h2>
         <br>
         <input id="submit" type="submit">
         <input id="clear" type="button" value="Clear List">
