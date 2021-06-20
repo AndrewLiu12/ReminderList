@@ -293,10 +293,22 @@ function editTask(itemid) {
 }
 
 // For adding a list item to one of the lists (including recently deleted)
-function addListItem(listItem, itemLoc, click_function) {
+function addListItem(listItem, itemLoc, itemDue, click_function) {
     var li = document.createElement('li');
 
     li.appendChild(document.createTextNode(listItem));
+    
+    // Testing
+    var container = document.createElement("span");
+    var text = document.createTextNode(" Due: " + (itemDue.getMonth() + 1) + "/" + itemDue.getDate() + "/" + itemDue.getFullYear());
+
+    container.appendChild(text);
+    container.style.color = "red";
+
+    li.appendChild(container);
+
+
+    // End of testing
     li.setAttribute('id', 'item' + lastid);
     li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
     li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
@@ -414,7 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Upon opening, load the list up 
         for (i = 0; i < stored.length; i++) {
-            addListItem(stored[i][1], stored[i][0], 'removeFromLists');
+            addListItem(stored[i][1], stored[i][0], new Date(), 'removeFromLists');
         }
     }
     else {
@@ -427,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Upon opening, load the list up 
         for (i = 0; i < del_tasks.length; i++) {
-            addListItem(del_tasks[i], 'discarded', 'removeFromTrash');
+            addListItem(del_tasks[i], 'discarded', new Date(), 'removeFromTrash');
         }
     }
     else {
@@ -474,10 +486,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check which radio button was selected
         var radio_val = document.querySelector('input[name="priority"]:checked').value;
 
+        // First checks if the radio button for the date was selected
+        if (document.querySelector('input[name="due_date"]:checked').value === 'yes_due_date') {
+            // Gets a date
+            var month_val = document.getElementById("month").value;
+            var day_val = document.getElementById("day").value;
+            var year_val = document.getElementById("year").value;
+            console.log(month_val, day_val, year_val);
+            const due_date = new Date(year_val, month_val - 1, day_val);
+            console.log(due_date);
+        }
+
         // Find the task the user just submitted
         const task = newTask.value;
 
-        addListItem(task, radio_val, 'removeFromLists');
+        addListItem(task, radio_val, due_date, 'removeFromLists');
 
         // Clear out input field:
         newTask.value = '';
@@ -485,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Disable the submit button again:
         submit.disabled = true;
 
-        stored.push([radio_val, task])
+        stored.push([radio_val, task, due_date]);
 
         // Store tasks in local storage
         localStorage.setItem('store_tasks', JSON.stringify(stored));
