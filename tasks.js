@@ -147,8 +147,8 @@ function removeFromTrash(itemid) {
 // Changes the button name, then updates the local storage
 function removeFromLists(itemid) {
     var item = document.getElementById(itemid);
-
-    item.parentNode.removeChild(item);
+    // Gets the id number of this element
+    var id_num = itemid.substring(4);
     
     for (i = 0; i < stored.length; i++) {
         if (stored[i][1] === item.firstChild.nodeValue) {
@@ -158,18 +158,20 @@ function removeFromLists(itemid) {
         }
     }
 
-    // Changes what the button of list item does
-    item.childNodes[1].innerHTML = "remove";
-    item.childNodes[1].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
+    // Changes what the button of list item does, CURRENTLY NOT USED
+    //item.childNodes[1].innerHTML = "remove";
+    //item.childNodes[1].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
 
-    // Changes what the first item in dropdown menu of about button does
-    var dropmenu = item.childNodes[2].childNodes[1];
+    // Changes what the first item in dropdown menu of about button is/does
+    var dropmenu = document.getElementById('myDropdown' + id_num);
     dropmenu.childNodes[0].innerHTML = "Completely Remove";
     dropmenu.childNodes[0].setAttribute('onClick', 'removeFromTrash("' + itemid + '")');
     
-    // Leaves only one option for now
+    // Leaves only one option for now, removing the move to the other priorities
     dropmenu.removeChild(dropmenu.childNodes[2]);
     dropmenu.removeChild(dropmenu.childNodes[1]);
+
+    item.parentNode.removeChild(item);
 
     document.querySelector('#discarded').append(item);
 
@@ -178,18 +180,20 @@ function removeFromLists(itemid) {
 }
 
 // For changing the visibility of the buttons to delete tasks
-function makeVisible(itemid) {
+function makeAboutVisible(itemid) {
     var item = document.getElementById(itemid);
 
-    //item.childNodes[1].style.visibility = "visible";
-    item.childNodes[2].childNodes[0].style.visibility = "visible";
+    item.childNodes[3].childNodes[0].style.visibility = "visible";
+
+    //console.log(item.childNodes[3].childNodes[0].style.visibility);
+    //item.childNodes[2].childNodes[0].style.visibility = "visible";
 }
 
-function makeInvisible(itemid) {
+function makeAboutInvisible(itemid) {
     var item = document.getElementById(itemid);
 
     //item.childNodes[1].style.visibility = "hidden";
-    item.childNodes[2].childNodes[0].style.visibility = "hidden";
+    item.childNodes[3].childNodes[0].style.visibility = "hidden";
 }
 
 // Fix name later
@@ -300,7 +304,18 @@ function addListItem(listItem, itemLoc, itemDue, click_function) {
     
     // Testing
     var container = document.createElement("span");
-    var text = document.createTextNode(" Due: " + (itemDue.getMonth() + 1) + "/" + itemDue.getDate() + "/" + itemDue.getFullYear());
+    var text = null;
+    if (itemDue !== null) {
+        if (itemLoc == 'discarded') {
+            text = document.createTextNode("");
+        }
+        else {
+            text = document.createTextNode(" Due: " + (itemDue.getMonth() + 1) + "/" + itemDue.getDate() + "/" + itemDue.getFullYear());
+        }
+    }
+    else {
+        text = document.createTextNode("");
+    }
 
     container.appendChild(text);
     container.style.color = "red";
@@ -309,11 +324,12 @@ function addListItem(listItem, itemLoc, itemDue, click_function) {
 
 
     // End of testing
-    li.setAttribute('id', 'item' + lastid);
-    li.setAttribute('onMouseOver', 'makeVisible("' + 'item' + lastid + '")');
-    li.setAttribute('onMouseOut', 'makeInvisible("' + 'item' + lastid + '")');
 
-    
+    li.setAttribute('id', 'item' + lastid);
+    li.setAttribute('onMouseOver', 'makeAboutVisible("' + 'item' + lastid + '")');
+    li.setAttribute('onMouseOut', 'makeAboutInvisible("' + 'item' + lastid + '")');
+
+    // Not currently used  
     var removeButton = document.createElement('button');
     if (click_function === 'removeFromLists') {
         removeButton.appendChild(document.createTextNode("move to trash"));
@@ -321,34 +337,36 @@ function addListItem(listItem, itemLoc, itemDue, click_function) {
     else {
         removeButton.appendChild(document.createTextNode("remove"));
     }
-    
     removeButton.setAttribute('onClick', click_function + '("' + 'item' + lastid + '")');
     removeButton.style.visibility = "hidden";
     li.appendChild(removeButton); 
 
 
-    // Creates a dropdown menu
+    // Creates a division next to the elements on the list item
     var div = document.createElement('div');
+    div.setAttribute('id', 'div' + lastid);
     div.setAttribute('class', 'dropdown');
     li.appendChild(div);
 
-
+    // Fits a button onto the previous divison mentioned
     var aboutButton = document.createElement('button');
     aboutButton.innerText = "...";
     aboutButton.setAttribute('onClick', 'showDropdown("' + lastid + '")');
+    aboutButton.setAttribute('id', 'aboutButton' + lastid);
     aboutButton.setAttribute('class', 'dropbtn');
     aboutButton.style.visibility = "hidden";
     div.appendChild(aboutButton);
 
-
+    // This is where the text for the dropmenu goes
     var innerdiv = document.createElement('div');
     innerdiv.setAttribute('id', 'myDropdown' + lastid);
     innerdiv.setAttribute('class', 'dropdown-content');
     div.appendChild(innerdiv);
 
+    // Next lines determine what is written in the dropdown menu 
     // This is the option for removing the task
     var remove_anchor = document.createElement('a');
-    remove_anchor.setAttribute('id', 'remove');
+    remove_anchor.setAttribute('id', 'remove' + lastid);
     remove_anchor.setAttribute('onClick', click_function + '("' + 'item' + lastid + '")');
     if (click_function === 'removeFromLists') {
         remove_anchor.innerText = "Move To Trash";
@@ -412,6 +430,7 @@ function addListItem(listItem, itemLoc, itemDue, click_function) {
 
 
 // Wait for page to load
+// Contains the eventListener for most elements
 document.addEventListener('DOMContentLoaded', function() {
     // For the clock to initialize
     currentTime();
@@ -423,10 +442,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Upon opening, put anything in the storage onto the list
     if (localStorage.getItem('store_tasks').length != 0) {
         stored = JSON.parse(localStorage.getItem('store_tasks'));
-    
+
         // Upon opening, load the list up 
         for (i = 0; i < stored.length; i++) {
-            addListItem(stored[i][1], stored[i][0], new Date(), 'removeFromLists');
+            if (stored[i][2] === null) {
+                addListItem(stored[i][1], stored[i][0], null, 'removeFromLists');
+            }
+            else {
+                addListItem(stored[i][1], stored[i][0], new Date(Date.parse(stored[i][2])), 'removeFromLists');
+            }
+            
         }
     }
     else {
@@ -436,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Also upon opening check if anything in the deleted pile
     if (localStorage.getItem('deleted_tasks').length != 0) {
         del_tasks = JSON.parse(localStorage.getItem('deleted_tasks'));
-    
+
         // Upon opening, load the list up 
         for (i = 0; i < del_tasks.length; i++) {
             addListItem(del_tasks[i], 'discarded', new Date(), 'removeFromTrash');
@@ -486,16 +511,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check which radio button was selected
         var radio_val = document.querySelector('input[name="priority"]:checked').value;
 
+        var due_date = null;
         // First checks if the radio button for the date was selected
         if (document.querySelector('input[name="due_date"]:checked').value === 'yes_due_date') {
             // Gets a date
             var month_val = document.getElementById("month").value;
             var day_val = document.getElementById("day").value;
             var year_val = document.getElementById("year").value;
-            console.log(month_val, day_val, year_val);
-            const due_date = new Date(year_val, month_val - 1, day_val);
-            console.log(due_date);
+            due_date = new Date(year_val, month_val - 1, day_val);
         }
+        /*else {
+            due_date = new Date();
+        }*/
 
         // Find the task the user just submitted
         const task = newTask.value;
@@ -512,6 +539,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Store tasks in local storage
         localStorage.setItem('store_tasks', JSON.stringify(stored));
+
+        //
+        document.getElementById('due_date_not').click();
 
         // Stop form from submitting
         return false;
